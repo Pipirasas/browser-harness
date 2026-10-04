@@ -56,6 +56,8 @@ from browser_harness.helpers import (
 
 SERVER = MCPServer("browser-harness")
 
+# recorder._details() interprets args positionally/by helper parameter name, so
+# mapped MCP tools must preserve the underlying helper argument names/order.
 _RECORDED_MCP_ACTIONS = {
     "browser_new_tab": "new_tab",
     "browser_goto": "goto_url",

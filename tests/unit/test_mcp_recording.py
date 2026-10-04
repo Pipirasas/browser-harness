@@ -50,12 +50,15 @@ def test_recording_includes_successful_mcp_action(tmp_path, monkeypatch):
     monkeypatch.setenv("BH_RECORD", "1")
     monkeypatch.setenv("BU_NAME", "mcp-recording-test")
 
-    def recorded_helpers():
+    def recorded_events():
         path = tmp_path / "mcp-recording" / "events.jsonl"
         return [
-            json.loads(line)["helper"]
+            json.loads(line)
             for line in path.read_text(encoding="utf-8").splitlines()
         ]
+
+    def recorded_helpers():
+        return [event["helper"] for event in recorded_events()]
 
     started = _call_tool(
         "browser_start_recording",
@@ -74,6 +77,8 @@ def test_recording_includes_successful_mcp_action(tmp_path, monkeypatch):
         "start_recording",
         "type_text",
     ]
+    type_event = recorded_events()[1]
+    assert type_event["text"] == "mcp-text"
 
     stopped = _call_tool("browser_stop_recording")
 
